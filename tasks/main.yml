@@ -1,0 +1,54 @@
+---
+- name: gather operating system variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_distribution_file_variety | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  tags: packages
+
+- name: install packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ packages_install_base }}"
+    - "{{ packages_install_base_extra }}"
+  environment: "{{ proxy_env }}"
+  become: true
+  tags: packages
+
+- name: install epel repo
+  package:
+    name: epel-release
+    state: present
+  environment: "{{ proxy_env }}"
+  when: packages_epel_release
+  become: true
+  tags: packages
+
+- name: install packages from epel repo
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ packages_install_epel }}"
+    - "{{ packages_install_epel_extra }}"
+  environment: "{{ proxy_env }}"
+  when: packages_epel_release
+  become: true
+  tags: packages
+
+- name: remove packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ packages_remove }}"
+    - "{{ packages_remove_extra }}"
+  become: true
+  tags: packages

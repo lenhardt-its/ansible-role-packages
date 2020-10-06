@@ -1,0 +1,46 @@
+---
+proxy_env: {}
+# do you want to install epel release?
+# when not, modify the package_install list
+packages_epel_release: true
+
+packages_install_base:
+  - tmux
+  - tar
+  - wget
+  - bind-utils
+  - bash-completion
+  - telnet
+  - net-snmp-utils
+  - net-tools
+  - ipmitool
+  - bzip2
+  - cifs-utils
+  - iotop
+  - expect
+  - dos2unix
+  - nmap
+  - strace
+  - tcpdump
+  - rsync
+  - unzip
+  - tree
+  - xz
+  - curl
+  - vim-enhanced
+  - git
+  - httpd-tools
+packages_install_base_extra: []
+
+packages_install_epel:
+  - htop
+  - iftop
+  - swaks
+  - p7zip
+  - tig
+packages_install_epel_extra: []
+
+packages_remove:
+  - sendmail
+  - cockpit
+packages_remove_extra: []
