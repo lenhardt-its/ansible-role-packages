@@ -11,44 +11,59 @@
     - "{{ ansible_os_family | lower }}.yml"
   tags: packages
 
-- name: install packages
-  package:
-    name: "{{ item }}"
+- name: install debian packages
+  apt:
+    name: "{{ packages_install }}"
+    update_cache: yes
     state: present
-  with_items:
-    - "{{ packages_install_base }}"
-    - "{{ packages_install_base_extra }}"
+  when: ansible_os_family == "Debian"
   environment: "{{ proxy_env }}"
-  become: true
   tags: packages
+  become: true
 
-- name: install epel repo
+- name: remove debian packages
+  apt:
+    name: "{{ packages_remove }}"
+    state: absent
+  when: ansible_os_family == "Debian"
+  environment: "{{ proxy_env }}"
+  tags: packages
+  become: true
+
+- name: install rhel packages
+  yum:
+    name: "{{ packages_install }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+  environment: "{{ proxy_env }}"
+  tags: packages
+  become: true
+
+- name: install rhel epel repo
   package:
     name: epel-release
     state: present
   environment: "{{ proxy_env }}"
-  when: packages_epel_release
+  when: packages_epel_release and ansible_os_family == "RedHat"
   become: true
   tags: packages
 
-- name: install packages from epel repo
+- name: install rhel packages from epel repo
   package:
     name: "{{ item }}"
     state: present
   with_items:
     - "{{ packages_install_epel }}"
-    - "{{ packages_install_epel_extra }}"
   environment: "{{ proxy_env }}"
-  when: packages_epel_release
+  when: packages_epel_release and ansible_os_family == "RedHat"
   become: true
   tags: packages
 
-- name: remove packages
-  package:
-    name: "{{ item }}"
+- name: remove rhel packages
+  yum:
+    name: "{{ packages_remove }}"
     state: absent
-  with_items:
-    - "{{ packages_remove }}"
-    - "{{ packages_remove_extra }}"
-  become: true
+  when: ansible_os_family == "RedHat"
+  environment: "{{ proxy_env }}"
   tags: packages
+  become: true
