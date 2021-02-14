@@ -40,5 +40,6 @@ packages_install:
   - tofrodos
   - bash-completion
   - apt-transport-https
+  - moreutils
 packages_remove:
   - sendmail
