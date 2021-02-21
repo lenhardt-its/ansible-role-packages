@@ -41,5 +41,7 @@ packages_install:
   - bash-completion
   - apt-transport-https
   - moreutils
+  - net-tools
+  - jq
 packages_remove:
   - sendmail
