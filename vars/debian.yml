@@ -43,5 +43,6 @@ packages_install:
   - moreutils
   - net-tools
   - jq
+  - ntfs-3g
 packages_remove:
   - sendmail
